@@ -1,5 +1,4 @@
 import requests
-import json
 
 def get_ip_and_location():
     try:
@@ -14,31 +13,20 @@ def get_ip_and_location():
         print(f"Error: {e}")
         return None, None, None, None
 
-def create_html_file(ip, city, region, country):
-    html_content = f"""
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>IP and Location Info</title>
-    </head>
-    <body>
-        <h1>Your IP and Location Information</h1>
-        <p><strong>IP Address:</strong> {ip}</p>
-        <p><strong>City:</strong> {city}</p>
-        <p><strong>Region:</strong> {region}</p>
-        <p><strong>Country:</strong> {country}</p>
-    </body>
-    </html>
-    """
-    with open('index.html', 'w') as f:
+def create_html_file_from_template(ip, city, region, country, template_file, output_file):
+    with open(template_file, 'r') as f:
+        html_template = f.read()
+    
+    html_content = html_template.format(ip=ip, city=city, region=region, country=country)
+    
+    with open(output_file, 'w') as f:
         f.write(html_content)
 
 if __name__ == "__main__":
     ip, city, region, country = get_ip_and_location()
     if ip:
-        create_html_file(ip, city, region, country)
+        create_html_file_from_template(ip, city, region, country, 'template.html', 'index.html')
         print("HTML file created: index.html")
     else:
         print("Failed to retrieve IP and location information.")
+
